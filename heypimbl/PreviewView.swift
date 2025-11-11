@@ -18,6 +18,14 @@ struct PreviewView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
+                // Warning banner
+                Text("You're parked in my bike lane!")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.red)
+
                 // Image preview
                 Image(uiImage: image)
                     .resizable()
