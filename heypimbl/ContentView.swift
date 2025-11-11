@@ -8,17 +8,47 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showCamera = true
+    @State private var capturedImage: UIImage?
+    @State private var showPreview = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack {
+            if showCamera && capturedImage == nil {
+                CameraView { image in
+                    capturedImage = image
+                    showPreview = true
+                    showCamera = false
+                }
+                .ignoresSafeArea()
+            } else if showPreview, let image = capturedImage {
+                PreviewView(
+                    image: image,
+                    onSend: {
+                        // Handle send action
+                        print("Image sent!")
+                        resetCamera()
+                    },
+                    onCancel: {
+                        // Handle cancel action
+                        resetCamera()
+                    }
+                )
+            }
         }
-        .padding()
+    }
+
+    private func resetCamera() {
+        capturedImage = nil
+        showPreview = false
+        showCamera = true
     }
 }
 
-#Preview {
-    ContentView()
+#if DEBUG
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
+#endif
