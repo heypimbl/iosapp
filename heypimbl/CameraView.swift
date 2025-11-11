@@ -25,7 +25,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     var previewLayer: AVCaptureVideoPreviewLayer?
     var photoOutput: AVCapturePhotoOutput?
     var onCapture: ((UIImage) -> Void)?
-    var currentCameraPosition: AVCaptureDevice.Position = .front
+    var currentCameraPosition: AVCaptureDevice.Position = .back
     var currentInput: AVCaptureDeviceInput?
 
     override func viewDidLoad() {
@@ -42,14 +42,14 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         let session = AVCaptureSession()
         session.sessionPreset = .high
 
-        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
-            // Fallback: use back camera if front is not available
-            guard let backCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+            // Fallback: use front camera if back is not available
+            guard let frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
                 showNoCamera()
                 return
             }
-            currentCameraPosition = .back
-            setupWithCamera(backCamera, session: session)
+            currentCameraPosition = .front
+            setupWithCamera(frontCamera, session: session)
             return
         }
 
