@@ -25,6 +25,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     var previewLayer: AVCaptureVideoPreviewLayer?
     var photoOutput: AVCapturePhotoOutput?
     var onCapture: ((UIImage) -> Void)?
+    var currentCameraPosition: AVCaptureDevice.Position = .front
+    var currentInput: AVCaptureDeviceInput?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +48,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 showNoCamera()
                 return
             }
+            currentCameraPosition = .back
             setupWithCamera(backCamera, session: session)
             return
         }
@@ -57,6 +60,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         do {
             let input = try AVCaptureDeviceInput(device: camera)
             session.addInput(input)
+            self.currentInput = input
 
             let photoOutput = AVCapturePhotoOutput()
             session.addOutput(photoOutput)
@@ -70,8 +74,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             captureSession = session
             session.startRunning()
 
-            // Add capture button
+            // Add capture button and flip button
             addCaptureButton()
+            addFlipButton()
         } catch {
             showNoCamera()
         }
@@ -109,6 +114,46 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
         // Make button larger for touch
         button.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+    }
+
+    func addFlipButton() {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "camera.rotate.fill"), for: .normal)
+        button.tintColor = .white
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(flipCamera), for: .touchUpInside)
+
+        view.addSubview(button)
+
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            button.widthAnchor.constraint(equalToConstant: 50),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+
+    @objc func flipCamera() {
+        guard let session = captureSession, let currentInput = currentInput else { return }
+
+        let newPosition: AVCaptureDevice.Position = currentCameraPosition == .front ? .back : .front
+
+        guard let newCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: newPosition) else {
+            return
+        }
+
+        do {
+            let newInput = try AVCaptureDeviceInput(device: newCamera)
+            session.beginConfiguration()
+            session.removeInput(currentInput)
+            session.addInput(newInput)
+            session.commitConfiguration()
+
+            self.currentInput = newInput
+            self.currentCameraPosition = newPosition
+        } catch {
+            // Failed to switch camera
+        }
     }
 
     @objc func capturePhoto() {
