@@ -108,12 +108,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         NSLayoutConstraint.activate([
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
-            button.widthAnchor.constraint(equalToConstant: 70),
-            button.heightAnchor.constraint(equalToConstant: 70)
+            button.widthAnchor.constraint(equalToConstant: 140),
+            button.heightAnchor.constraint(equalToConstant: 140)
         ])
 
         // Make button larger for touch
-        button.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+        button.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
     }
 
     func addFlipButton() {
