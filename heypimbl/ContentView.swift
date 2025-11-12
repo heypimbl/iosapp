@@ -12,10 +12,13 @@ struct ContentView: View {
     @State private var showCamera = true
     @State private var capturedImage: UIImage?
     @State private var showPreview = false
+    @State private var capturedLocation: CLLocationCoordinate2D?
+    @State private var isSending = false
+    @State private var showSuccess = false
     @StateObject private var locationManager = LocationManager()
 
     // Development flag - set to true to skip actual API calls
-    private let isTestMode = false
+    private let isTestMode = true
 
     var body: some View {
         ZStack {
@@ -25,27 +28,24 @@ struct ContentView: View {
                     showPreview = true
                     showCamera = false
 
-                    // Request location permission if not yet determined
-                    let status = CLLocationManager.authorizationStatus()
-                    if status == .notDetermined {
-                        locationManager.requestLocationPermission()
-                    }
+                    // Fetch location immediately after photo capture
+                    fetchLocationAfterCapture()
                 }
                 .ignoresSafeArea()
             } else if showPreview, let image = capturedImage {
                 PreviewView(
                     image: image,
                     onSend: {
-                        // Handle send action
+                        // Start sending, show sending banner
+                        isSending = true
                         submitImageToAPI(image)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            resetCamera()
-                        }
                     },
                     onCancel: {
                         // Handle cancel action
                         resetCamera()
-                    }
+                    },
+                    isSending: isSending,
+                    showSuccess: showSuccess
                 )
             }
         }
@@ -53,26 +53,59 @@ struct ContentView: View {
 
     private func resetCamera() {
         capturedImage = nil
+        capturedLocation = nil
         showPreview = false
         showCamera = true
+        isSending = false
+        showSuccess = false
+    }
+
+    private func fetchLocationAfterCapture() {
+        // Request location permission if not yet determined
+        let status = CLLocationManager.authorizationStatus()
+        if status == .notDetermined {
+            locationManager.requestLocationPermission()
+        }
+
+        // Fetch location if we have permission
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            locationManager.requestCurrentLocation { location in
+                capturedLocation = location
+            }
+        }
     }
 
     private func submitImageToAPI(_ image: UIImage) {
-        // Check location permission status
-        let status = CLLocationManager.authorizationStatus()
-
-        switch status {
-        case .denied, .restricted:
-            // User has denied permission, submit without location
-            submitToAPIWithLocation(image, location: nil)
-        case .authorizedWhenInUse, .authorizedAlways:
-            // We have permission, get current location
-            locationManager.requestCurrentLocation { location in
-                submitToAPIWithLocation(image, location: location)
+        // If location is already available, submit immediately
+        if capturedLocation != nil {
+            submitToAPIWithLocation(image, location: capturedLocation)
+            showSuccess = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                resetCamera()
             }
-        default:
-            // For notDetermined, submit without location (permission will be requested)
-            submitToAPIWithLocation(image, location: nil)
+        } else {
+            // Wait for location if it's not yet available but we're trying to get it
+            let status = CLLocationManager.authorizationStatus()
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
+                // Location permission granted, wait for location update
+                locationManager.requestCurrentLocation { location in
+                    DispatchQueue.main.async {
+                        capturedLocation = location
+                        submitToAPIWithLocation(image, location: location)
+                        showSuccess = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            resetCamera()
+                        }
+                    }
+                }
+            } else {
+                // No permission or denied, submit without location
+                submitToAPIWithLocation(image, location: nil)
+                showSuccess = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    resetCamera()
+                }
+            }
         }
     }
 

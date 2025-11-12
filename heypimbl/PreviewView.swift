@@ -11,7 +11,8 @@ struct PreviewView: View {
     let image: UIImage
     var onSend: () -> Void
     var onCancel: () -> Void
-    @State private var showSuccess = false
+    var isSending: Bool = false
+    var showSuccess: Bool = false
 
     var body: some View {
         ZStack {
@@ -26,7 +27,7 @@ struct PreviewView: View {
                     .ignoresSafeArea(edges: .top)
 
                 // Action buttons
-                if !showSuccess {
+                if !showSuccess && !isSending {
                     HStack(spacing: 60) {
                         // Cancel button (Red X)
                         Button(action: onCancel) {
@@ -37,7 +38,6 @@ struct PreviewView: View {
 
                         // Send button (Green Arrow)
                         Button(action: {
-                            showSuccess = true
                             onSend()
                         }) {
                             Image(systemName: "arrow.up.circle.fill")
@@ -57,7 +57,7 @@ struct PreviewView: View {
                 }
             }
 
-            // Warning banner - marquee style
+            // Warning banner or Sending banner
             if !showSuccess {
                 VStack {
                     Spacer()
@@ -66,22 +66,41 @@ struct PreviewView: View {
                     HStack {
                         Spacer()
 
-                        VStack(spacing: 8) {
-                            Image(systemName: "exclamationmark.circle.fill")
-                                .font(.system(size: 28))
-                                .foregroundColor(.white)
+                        if isSending {
+                            // Sending banner - yellow-green
+                            VStack(spacing: 8) {
+                                ProgressView()
+                                    .tint(.black)
 
-                            Text("You're parked in\nmy bike lane!")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.white)
-                                .multilineTextAlignment(.center)
+                                Text("Submitting...")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.black)
+                            }
+                            .frame(maxWidth: 180)
+                            .padding(.vertical, 20)
+                            .padding(.horizontal, 20)
+                            .background(Color(red: 0.9, green: 0.95, blue: 0.7))
+                            .cornerRadius(16)
+                            .shadow(radius: 8)
+                        } else {
+                            // Warning banner
+                            VStack(spacing: 8) {
+                                Image(systemName: "exclamationmark.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(.white)
+
+                                Text("You're parked in\nmy bike lane!")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: 180)
+                            .padding(.vertical, 20)
+                            .padding(.horizontal, 20)
+                            .background(Color.yellow)
+                            .cornerRadius(16)
+                            .shadow(radius: 8)
                         }
-                        .frame(maxWidth: 180)
-                        .padding(.vertical, 20)
-                        .padding(.horizontal, 20)
-                        .background(Color.yellow)
-                        .cornerRadius(16)
-                        .shadow(radius: 8)
 
                         Spacer()
                     }
