@@ -1,0 +1,31 @@
+# Xcode user-specific files
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.pbxuser
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+
+# Build artifacts
+build/
+DerivedData/
+*.swiftpm/xcode/package.xcworkspace/xcuserdata/
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
