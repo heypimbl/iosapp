@@ -18,7 +18,7 @@ struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
 
     // Development flag - set to true to skip actual API calls
-    private let isTestMode = true
+    private let isTestMode = false
 
     var body: some View {
         ZStack {
@@ -163,7 +163,7 @@ struct ContentView: View {
         }
 
         // Add image data
-        let imageField = "--\(boundary)\r\nContent-Disposition: form-data; name=\"image[] \"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n"
+        let imageField = "--\(boundary)\r\nContent-Disposition: form-data; name=\"image[]\"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n"
         body.append(imageField.data(using: .utf8) ?? Data())
         body.append(imageData)
         body.append("\r\n".data(using: .utf8) ?? Data())

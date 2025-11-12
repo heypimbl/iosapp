@@ -2,6 +2,9 @@
 
 An iOS app for reporting cars parked in bike lanes to 311 with photo evidence and location data.
 
+
+(In case it wasn't obvious, Claude wrote this readme.)
+
 ## Overview
 
 HeyPimbl makes it quick and easy to report parking violations in bike lanes by:
@@ -17,7 +20,7 @@ HeyPimbl makes it quick and easy to report parking violations in bike lanes by:
   - Yellow warning banner showing the violation you're about to report
   - Yellow-green "Sending..." banner while your report is being submitted
   - Green success screen confirming the report was submitted
-- **Graceful Fallback**: Works even if location permission is denied or GPS is unavailable
+- **Graceful Fallback**: Submits even if location permission is denied or GPS is unavailable
 
 ## How to Use
 
