@@ -15,7 +15,7 @@ struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
 
     // Development flag - set to true to skip actual API calls
-    private let isTestMode = true
+    private let isTestMode = false
 
     var body: some View {
         ZStack {
@@ -77,16 +77,19 @@ struct ContentView: View {
     }
 
     private func submitToAPIWithLocation(_ image: UIImage, location: CLLocationCoordinate2D?) {
+        let timestamp = ISO8601DateFormatter().string(from: Date())
+
+        print("[\(timestamp)] API Request Starting")
+        print("Image size: \(image.size)")
+        if let location = location {
+            print("Location: \(location.latitude), \(location.longitude)")
+        } else {
+            print("Location: Not available")
+        }
+
         if isTestMode {
             // Test mode - just log the data without making actual API call
             print("=== TEST MODE - NOT POSTING TO SERVER ===")
-            print("Image size: \(image.size)")
-            print("Timestamp: \(ISO8601DateFormatter().string(from: Date()))")
-            if let location = location {
-                print("Location: \(location.latitude), \(location.longitude)")
-            } else {
-                print("Location: Not available")
-            }
             print("=====================================")
             return
         }
@@ -98,7 +101,7 @@ struct ContentView: View {
         }
 
         // Create the request URL
-        guard let url = URL(string: "TODO") else {
+        guard let url = URL(string: "http://10.100.1.161:4000/problem") else {
             print("Invalid API URL")
             return
         }
@@ -113,7 +116,6 @@ struct ContentView: View {
         var body = Data()
 
         // Add current timestamp
-        let timestamp = ISO8601DateFormatter().string(from: Date())
         let timestampField = "--\(boundary)\r\nContent-Disposition: form-data; name=\"timestamp\"\r\n\r\n\(timestamp)\r\n"
         body.append(timestampField.data(using: .utf8) ?? Data())
 
@@ -128,7 +130,7 @@ struct ContentView: View {
         }
 
         // Add image data
-        let imageField = "--\(boundary)\r\nContent-Disposition: form-data; name=\"image\"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n"
+        let imageField = "--\(boundary)\r\nContent-Disposition: form-data; name=\"image[] \"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n"
         body.append(imageField.data(using: .utf8) ?? Data())
         body.append(imageData)
         body.append("\r\n".data(using: .utf8) ?? Data())
@@ -140,20 +142,27 @@ struct ContentView: View {
         request.httpBody = body
 
         // Send the request
+        print("[\(timestamp)] Sending POST request to API")
+        let requestStartTime = Date()
+
         URLSession.shared.dataTask(with: request) { data, response, error in
+            let elapsed = Date().timeIntervalSince(requestStartTime)
+
             if let error = error {
-                print("API Error: \(error.localizedDescription)")
+                print("[\(timestamp)] API Error after \(String(format: "%.2f", elapsed))s: \(error.localizedDescription)")
                 return
             }
 
             if let httpResponse = response as? HTTPURLResponse {
-                print("API Response Status: \(httpResponse.statusCode)")
+                print("[\(timestamp)] API Response Status: \(httpResponse.statusCode) (after \(String(format: "%.2f", elapsed))s)")
             }
 
             if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                print("API Response: \(responseString)")
+                print("[\(timestamp)] API Response Body: \(responseString)")
             }
         }.resume()
+
+        print("[\(timestamp)] API Request queued (non-blocking)")
     }
 }
 

@@ -72,7 +72,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             previewLayer = preview
 
             captureSession = session
-            session.startRunning()
+
+            // Start the session on a background thread to avoid UI blocking
+            DispatchQueue.global(qos: .userInitiated).async {
+                session.startRunning()
+            }
 
             // Add capture button and flip button
             addCaptureButton()
