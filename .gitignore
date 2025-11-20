@@ -1,5 +1,6 @@
 # Xcode user-specific files
 xcuserdata/
+xcshareddata/
 *.xcworkspace/xcuserdata/
 *.pbxuser
 *.perspectivev3

@@ -1,5 +1,11 @@
 # Todos
 
+* sometimes the address page doesn't work
+* we need to deploy the server somewhere
+* we need to track the submissions.
+
+
+
 ## Idea: How to track the submissions
 1. Client needs a CLIENT submission queue
 2. When client sends photo, it should save the submission.
