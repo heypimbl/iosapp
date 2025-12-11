@@ -1,4 +1,4 @@
-# HeyPimbl
+# PIMBL
 
 An iOS app for reporting cars parked in bike lanes to 311 with photo evidence and location data.
 
@@ -7,7 +7,7 @@ An iOS app for reporting cars parked in bike lanes to 311 with photo evidence an
 
 ## Overview
 
-HeyPimbl makes it quick and easy to report parking violations in bike lanes by:
+PIMBL makes it quick and easy to report parking violations in bike lanes by:
 - Taking a photo of the violating car
 - Capturing your GPS location automatically
 - Submitting both to your city's 311 service in seconds
