@@ -1,13 +1,13 @@
 //
-//  heypimblUITests.swift
-//  heypimblUITests
+//  pimblUITests.swift
+//  pimblUITests
 //
 //  Created by Macbook Pro on 11/11/25.
 //
 
 import XCTest
 
-final class heypimblUITests: XCTestCase {
+final class pimblUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

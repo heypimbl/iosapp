@@ -1,6 +1,6 @@
 //
 //  PreviewView.swift
-//  heypimbl
+//  pimbl
 //
 //  Created by Macbook Pro on 11/11/25.
 //

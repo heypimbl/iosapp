@@ -1,13 +1,13 @@
 //
-//  heypimblUITestsLaunchTests.swift
-//  heypimblUITests
+//  pimblUITestsLaunchTests.swift
+//  pimblUITests
 //
 //  Created by Macbook Pro on 11/11/25.
 //
 
 import XCTest
 
-final class heypimblUITestsLaunchTests: XCTestCase {
+final class pimblUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

@@ -1,6 +1,6 @@
 //
-//  heypimblApp.swift
-//  heypimbl
+//  pimblApp.swift
+//  pimbl
 //
 //  Created by Macbook Pro on 11/11/25.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct heypimblApp: App {
+struct pimblApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

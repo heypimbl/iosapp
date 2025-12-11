@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  heypimbl
+//  pimbl
 //
 //  Created by Macbook Pro on 11/11/25.
 //
@@ -134,7 +134,7 @@ struct ContentView: View {
         }
 
         // Create the request URL
-        guard let url = URL(string: "http://10.100.19.19:4000/problem") else {
+        guard let url = URL(string: "PROD_URL_GOES_HERE") else {
             print("Invalid API URL")
             return
         }
