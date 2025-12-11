@@ -134,7 +134,7 @@ struct ContentView: View {
         }
 
         // Create the request URL
-        guard let url = URL(string: "PROD_URL_GOES_HERE") else {
+        guard let url = URL(string: "https://pimbl.mou.fo/problem") else {
             print("Invalid API URL")
             return
         }
