@@ -22,6 +22,9 @@ struct ContentView: View {
     // Development flag - set to true to skip actual API calls
     private let isTestMode = false
 
+    // Development flag - set to true to show settings gear icon
+    private let showSettingsMenu = false
+
     var body: some View {
         ZStack {
             if showCamera && capturedImage == nil {
@@ -35,18 +38,20 @@ struct ContentView: View {
                 }
                 .ignoresSafeArea()
                 .overlay(alignment: .topLeading) {
-                    Button(action: {
-                        showSettings = true
-                    }) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.black.opacity(0.3))
-                            .clipShape(Circle())
+                    if showSettingsMenu {
+                        Button(action: {
+                            showSettings = true
+                        }) {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 24))
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.black.opacity(0.3))
+                                .clipShape(Circle())
+                        }
+                        .padding(.top, 20)
+                        .padding(.leading, 20)
                     }
-                    .padding(.top, 20)
-                    .padding(.leading, 20)
                 }
                 .sheet(isPresented: $showSettings) {
                     SettingsView(settingsManager: settingsManager)
