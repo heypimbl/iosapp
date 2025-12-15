@@ -15,7 +15,9 @@ struct ContentView: View {
     @State private var capturedLocation: CLLocationCoordinate2D?
     @State private var isSending = false
     @State private var showSuccess = false
+    @State private var showSettings = false
     @StateObject private var locationManager = LocationManager()
+    @StateObject private var settingsManager = SettingsManager()
 
     // Development flag - set to true to skip actual API calls
     private let isTestMode = false
@@ -32,6 +34,23 @@ struct ContentView: View {
                     fetchLocationAfterCapture()
                 }
                 .ignoresSafeArea()
+                .overlay(alignment: .topLeading) {
+                    Button(action: {
+                        showSettings = true
+                    }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.black.opacity(0.3))
+                            .clipShape(Circle())
+                    }
+                    .padding(.top, 20)
+                    .padding(.leading, 20)
+                }
+                .sheet(isPresented: $showSettings) {
+                    SettingsView(settingsManager: settingsManager)
+                }
             } else if showPreview, let image = capturedImage {
                 PreviewView(
                     image: image,
@@ -134,7 +153,7 @@ struct ContentView: View {
         }
 
         // Create the request URL
-        guard let url = URL(string: "https://pimbl.mou.fo/problem") else {
+        guard let url = URL(string: settingsManager.serverURL) else {
             print("Invalid API URL")
             return
         }
