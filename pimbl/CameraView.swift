@@ -39,6 +39,33 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
 
     func setupCamera() {
+        // Check camera authorization status
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+
+        switch authorizationStatus {
+        case .authorized:
+            // Permission already granted, proceed with setup
+            setupCameraSession()
+        case .notDetermined:
+            // Request permission
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                DispatchQueue.main.async {
+                    if granted {
+                        self?.setupCameraSession()
+                    } else {
+                        self?.showCameraAccessDenied()
+                    }
+                }
+            }
+        case .denied, .restricted:
+            // Permission denied or restricted
+            showCameraAccessDenied()
+        @unknown default:
+            showCameraAccessDenied()
+        }
+    }
+
+    func setupCameraSession() {
         let session = AVCaptureSession()
         session.sessionPreset = .high
 
@@ -84,6 +111,25 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         } catch {
             showNoCamera()
         }
+    }
+
+    func showCameraAccessDenied() {
+        view.backgroundColor = .black
+
+        let label = UILabel()
+        label.text = "Camera access is required to use this app"
+        label.textAlignment = .center
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
     }
 
     func showNoCamera() {
@@ -161,7 +207,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
 
     @objc func capturePhoto() {
-        guard let photoOutput = photoOutput else { return }
+        guard let photoOutput = photoOutput,
+              let session = captureSession,
+              session.isRunning else {
+            print("Cannot capture: session not running")
+            return
+        }
 
         let settings = AVCapturePhotoSettings()
         settings.flashMode = .auto
