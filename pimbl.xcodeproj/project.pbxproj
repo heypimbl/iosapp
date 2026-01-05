@@ -400,9 +400,9 @@
 				DEVELOPMENT_TEAM = PZ89MW77SU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "With camera access, you can take photos to report bike lane violations to the city.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to report bike lane violations to the city.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We save photos of bike lane violations to your photo library.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "When you take a photo of an illegal parking violation, we send a report to the city via NYC311 (https://portal.311.nyc.gov).";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location as the site of the illegal parking violation in our report to NYC311 (https://portal.311.nyc.gov).";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We save your photos taken with this app to your photo library.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -430,9 +430,9 @@
 				DEVELOPMENT_TEAM = PZ89MW77SU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "With camera access, you can take photos to report bike lane violations to the city.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to report bike lane violations to the city.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We save photos of bike lane violations to your photo library.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "When you take a photo of an illegal parking violation, we send a report to the city via NYC311 (https://portal.311.nyc.gov).";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location as the site of the illegal parking violation in our report to NYC311 (https://portal.311.nyc.gov).";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We save your photos taken with this app to your photo library.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
