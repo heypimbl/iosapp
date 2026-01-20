@@ -215,7 +215,13 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         }
 
         let settings = AVCapturePhotoSettings()
-        settings.flashMode = .auto
+
+        // Only set flash mode if the device supports it (iPads typically don't have flash)
+        if let currentInput = currentInput,
+           currentInput.device.hasFlash && currentInput.device.isFlashAvailable {
+            settings.flashMode = .auto
+        }
+
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
 
