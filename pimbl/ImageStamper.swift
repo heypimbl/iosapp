@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import CoreLocation
 
 struct ImageStamper {
 
     /// Adds a date/time stamp to the bottom right of the image
-    static func addTimestamp(to image: UIImage) -> UIImage {
+    /// If location is nil, shows "Location data will go here" as placeholder
+    static func addTimestamp(to image: UIImage, location: CLLocationCoordinate2D? = nil) -> UIImage {
         let renderer = UIGraphicsImageRenderer(size: image.size)
 
         return renderer.image { context in
@@ -21,6 +23,16 @@ struct ImageStamper {
             dateFormatter.dateFormat = "MM/dd/yyyy, HH:mm:ss zzz"
             let dateString = dateFormatter.string(from: Date())
 
+            // Location line
+            let locationString: String
+            if let location = location {
+                let latDirection = location.latitude >= 0 ? "N" : "S"
+                let lonDirection = location.longitude >= 0 ? "E" : "W"
+                locationString = String(format: "%.6f°%@, %.6f°%@", abs(location.latitude), latDirection, abs(location.longitude), lonDirection)
+            } else {
+                locationString = "Location data will go here"
+            }
+
             let fontSize = max(image.size.width * 0.025, 14)
             let font = UIFont.monospacedSystemFont(ofSize: fontSize, weight: .medium)
 
@@ -29,12 +41,17 @@ struct ImageStamper {
                 .foregroundColor: UIColor.white
             ]
 
-            let textSize = dateString.size(withAttributes: textAttributes)
+            let dateSize = dateString.size(withAttributes: textAttributes)
+            let locationSize = locationString.size(withAttributes: textAttributes)
             let padding: CGFloat = fontSize * 0.6
+            let lineSpacing: CGFloat = fontSize * 0.3
             let margin = fontSize * 0.8
 
-            let backgroundWidth = textSize.width + padding * 2
-            let backgroundHeight = textSize.height + padding * 2
+            let textWidth = max(dateSize.width, locationSize.width)
+            let textHeight = dateSize.height + lineSpacing + locationSize.height
+
+            let backgroundWidth = textWidth + padding * 2
+            let backgroundHeight = textHeight + padding * 2
             let backgroundX = image.size.width - backgroundWidth - margin
             let backgroundY = image.size.height - backgroundHeight - margin
 
@@ -43,8 +60,11 @@ struct ImageStamper {
             UIBezierPath(roundedRect: backgroundRect, cornerRadius: 4).fill()
 
             let textX = backgroundX + padding
-            let textY = backgroundY + padding
-            dateString.draw(at: CGPoint(x: textX, y: textY), withAttributes: textAttributes)
+            let dateY = backgroundY + padding
+            dateString.draw(at: CGPoint(x: textX, y: dateY), withAttributes: textAttributes)
+
+            let locationY = dateY + dateSize.height + lineSpacing
+            locationString.draw(at: CGPoint(x: textX, y: locationY), withAttributes: textAttributes)
         }
     }
 }
