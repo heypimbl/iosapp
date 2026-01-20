@@ -29,11 +29,9 @@ struct ContentView: View {
         ZStack {
             if showCamera && capturedImage == nil {
                 CameraView { image in
-                    capturedImage = image
+                    capturedImage = ImageStamper.addTimestamp(to: image)
                     showPreview = true
                     showCamera = false
-
-                    // Fetch location immediately after photo capture
                     fetchLocationAfterCapture()
                 }
                 .ignoresSafeArea()
@@ -85,13 +83,10 @@ struct ContentView: View {
     }
 
     private func fetchLocationAfterCapture() {
-        // Request location permission if not yet determined
         let status = CLLocationManager.authorizationStatus()
         if status == .notDetermined {
             locationManager.requestLocationPermission()
         }
-
-        // Fetch location if we have permission
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             locationManager.requestCurrentLocation { location in
                 capturedLocation = location
